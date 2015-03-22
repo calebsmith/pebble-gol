@@ -1,0 +1,19 @@
+{
+  "uuid": "dbf90f64-74d5-45b2-b572-970e76161c66",
+  "shortName": "GOL",
+  "longName": "Conway's Game of Life",
+  "companyName": "calebsmith",
+  "versionCode": 1,
+  "versionLabel": "1.0",
+  "sdkVersion": "3",
+  "targetPlatforms": ["aplite", "basalt"],
+  "watchapp": {
+    "watchface": true
+  },
+  "appKeys": {
+    "dummy": 0
+  },
+  "resources": {
+    "media": []
+  }
+}
