@@ -6,7 +6,7 @@ Installation
 
 Install pebble SDK per instructions at getpebble.com
 
-..image:: https://i.imgur.com/F8hOVgh.gif
+![gif of watch showing GOL](https://i.imgur.com/F8hOVgh.gif)
 
 Run `make` to create a build
 
