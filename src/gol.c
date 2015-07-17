@@ -1,12 +1,20 @@
 #include "pebble.h"
+#include <time.h>
+#include <stdlib.h>
 
-#define TICK 300
+#define TICK 333
 #define BOARD_WIDTH 50
 #define BOARD_HEIGHT 50
+#define X_OFFSET 10
+#define Y_OFFSET 15
+
+#define MAX_GENERATIONS 180
+
 
 static Window* window;
 int board[BOARD_WIDTH * BOARD_HEIGHT];
 int temp_board[BOARD_WIDTH * BOARD_HEIGHT];
+int counter = 0;
 
 /*
  * GAME LOGIC
@@ -61,27 +69,22 @@ static void update_board() {
             board[y * BOARD_WIDTH + x] = temp_board[y * BOARD_WIDTH + x];
         }
     }
-
 }
 
 
 static void setup_board() {
     int y, x;
+    int prob;
+    int state;
 
     for (y = 0; y < BOARD_HEIGHT; y++) {
         for (x = 0; x < BOARD_WIDTH; x++) {
-            board[y * BOARD_WIDTH + x] = 0;
-            temp_board[y * BOARD_WIDTH + x] = 0;
+            prob = (rand() % 100) + 1;
+            state = (prob > 60) ? 1 : 0;
+            board[y * BOARD_WIDTH + x] = state;
+            temp_board[y * BOARD_WIDTH + x] = state;
         }
     }
-
-    // FIXME: hardcoded r pentomino for now
-    board[30 + 30 * BOARD_WIDTH] = 1;
-    board[31 + 30 * BOARD_WIDTH] = 1;
-    board[30 + 31 * BOARD_WIDTH] = 1;
-    board[29 + 31 * BOARD_WIDTH] = 1;
-    board[30 + 32 * BOARD_WIDTH] = 1;
-
 }
 
 // Graphics routines
@@ -93,8 +96,8 @@ static void draw_board(GContext* ctx, GRect bounds) {
     int y, x;
 
     graphics_context_set_fill_color(ctx, GColorWhite);
-    for (y = 0; y < BOARD_HEIGHT; y++) {
-        for (x = 0; x < BOARD_WIDTH; x++) {
+    for (y = Y_OFFSET; y < BOARD_HEIGHT + Y_OFFSET; y++) {
+        for (x = X_OFFSET; x < BOARD_WIDTH + X_OFFSET; x++) {
             if (board[y * BOARD_WIDTH + x] == 1) {
                 draw_cell(ctx, bounds, x, y);
             }
@@ -110,6 +113,11 @@ static void window_layer_draw(Layer* layer, GContext* ctx) {
 
     draw_board(ctx, bounds);
     update_board();
+    counter++;
+    if (counter >= MAX_GENERATIONS) {
+        setup_board();
+        counter = 0;
+    }
 }
 
 /*
@@ -142,6 +150,7 @@ static void init(void) {
 
     // Start a timer to run game updates
     app_timer_register(TICK, loop_update, NULL);
+    srand(time(NULL));
     setup_board();
 }
 
